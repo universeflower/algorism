@@ -1,0 +1,134 @@
+import utility
+class Node:
+    def __init__(self,data):
+        self.l_child = None
+        self.r_child = None
+        self.data = data
+        
+def tree(key, r, i, j):
+    k = r[i][j]
+    if(k==0):
+        return
+    else:
+        p=Node(key[k])
+        p.l_child=tree(key,r,i,k-1)
+        p.r_child=tree(key,r,k+1,j)
+        return p
+
+key = [" ","A","B","C","D","E"]
+p=[0,4/15,5/15,1/15,3/15,2/15]
+n = len(p)-1
+
+a = [[0 for j in range(0,n+2)] for i in range(0,n+2)] # 2차원 배열 0으로 초기화
+r = [[0 for j in range(0,n+2)] for i in range(0,n+2)]
+
+def optsearchtree(n, p, a, r):
+    for i in range(1,n+1):
+        a[i][i-1]=0
+        a[i][i]=p[i]
+        r[i][i]=i
+        r[i][i-1]=0
+    a[n+1][n] = 0
+    r[n+1][n] = 0
+    for diagonal in range(1,n):
+        for i in range(1,n-diagonal+1): # 대각선 위쪽만 채우기
+            j = i+diagonal
+            # min값 구하는 과정
+            minvalue = float('inf')
+            for k in range(i,j+1):
+                if a[i][k-1]+a[k+1][j] < minvalue:
+                    minvalue = a[i][k-1]+a[k+1][j]
+                    mink = k
+            # 시그마값 구하는 과정
+            sigma = 0
+            for l in range(i, j+1):
+                sigma += p[l]
+            # a값 설정
+            a[i][j] = minvalue + sigma
+            # r값 설정
+            r[i][j] = mink
+    return a,r
+    
+a,r = optsearchtree(n, p, a, r)
+    
+utility.printMatrixF(a)
+print()
+utility.printMatrix(r)
+print()
+
+root=tree(key,r,1,n)
+utility.print_inOrder(root)
+print()
+utility.print_preOrder(root)
+
+
+import utility
+a=['A','A','C','A','G','T','A','C','C']
+b=['T','A','C','G','T','T','C','A']
+
+m=len(a)
+n=len(b)
+table=[[0 for j in range(0,n+1)] for i in range(0,m+1)]
+minindex = [[ (0,0) for j in range(0,n+1)] for i in range(0,m+1)]
+
+for j in range(n-1,-1,-1):
+    table[m][j] =table[m][j+1]+2
+
+for i in range(m-1,-1,-1):
+    table[i][n] =table[i+1][n]+2
+
+# 테이블 생성 구현
+def opt(i,j):
+    if i == m: # 오른쪽 끝, 아래쪽 끝에 값 넣기
+        opt_val = 2*(n-j)
+    elif j == n:
+        opt_val = 2*(m-i)
+    else: # 그 외의 경우 비용 구하기
+        if a[i] == b[j]:
+            penalty = 0
+        else:
+            penalty = 1
+        opt_val = min(opt(i+1,j+1)+penalty, opt(i+1,j)+2, opt(i,j+1)+2)
+    return opt_val
+
+# 맨 아래 오른쪽부터 순서대로 채워나감
+# 강의에서는 대각선으로 올라가라고 하셨지만, 오른쪽 아래부터 순서대로 올라가도 문제없음
+for j in range(n-1,-1,-1):
+    for i in range(m-1,-1,-1):
+        table[i][j] = opt(i,j)
+
+
+# minindex 테이블 구현 (m=10, n=8)
+def minidx(i,j):
+    if table[i][j] == table[i][j+1] + 2: # 오른쪽이랑 비교해서 2만큼 작아졌으면 
+        minindex[i][j] = (i,j+1) # minindex는 자신의 오른쪽 좌표
+        if j+1<n: # 만약 j+1이 n보다 작다면
+            minidx(i,j+1) # 다음으로 진행
+    elif table[i][j] == table[i+1][j] + 2: # 아래쪽이랑 비교해서 2만큼 작아졌으면 
+        minindex[i][j] = (i+1,j) # minindex는 자신의 아래쪽 좌표
+        if i+1<m: # 만약 i+1이 m보다 작다면
+            minidx(i+1,j) # 다음으로 진행
+    else: # 그게 아니라면 (틈이 아닌 0 혹은 1의 페널티 발생)
+        minindex[i][j] = (i+1,j+1) # minindex는 자신의 오른쪽 아래 좌표
+        if i+1<m and j+1<n: # i+1이 m보다 작고, j+1이 n보다 작다면
+            minidx(i+1,j+1) # 다음으로 진행
+
+minidx(0,0) # 0,0에서 시작
+
+
+utility.printMatrix(table)
+print()
+x=0
+y=0
+
+
+while (x < m and y < n):
+    tx, ty = x, y # x와 y는 0부터 시작
+    print(minindex[x][y])
+    (x,y)= minindex[x][y]
+    if x == tx + 1 and y == ty+1:
+        print(a[tx]," ",  b[ty])
+    elif x == tx and y == ty+1:
+        print(" - ", " ", b[ty])
+    else:
+        print(a[tx], " " , " -")
