@@ -1,0 +1,236 @@
+def fload():
+    INF = int(1e9) # 무한을 의미하는 값으로 10억 설정
+
+    # 노드의 개수, 간선의 개수를 입력받기
+    print("노드의 개수, 간선의 개수를 입력")
+    n, m = map(int, input().split())
+
+    # 최단경로 리스트
+    # 노드번호가 1번부터 시작하여(n+1)로 설정
+    graph = [[INF]*(n+1) for _ in range(n+1)]
+
+    # 자기 자신으로 가는 비용은 0으로 초기화
+    for a in range(1, n+1):
+      for b in range(1,n+1):
+        if a==b:
+          graph[a][b] = 0
+
+    # 노드의 연결 정보를 입력받아 그 값으로 초기화
+    for _ in range(m):
+      # A에서 B로 가는 비용은 C
+      print("A에서 B로 가는 비용은 C 입력")
+      a,b,c = map(int, input().split())
+      graph[a][b] = c
+
+    # 점화식에 따라 플로이드 워셜 알고리즘 수행
+    for k in range(1, n+1):
+      for a in range(1, n+1):
+        for b in range(1, n+1):
+          graph[a][b] = min(graph[a][b], graph[a][k]+graph[k][b])
+
+    # 수행된 결과를 출력
+    for a in range(1, n+1):
+      for b in range(1, n+1):
+         # 도달할 수 없는 경우, 무한이라고 출력
+        if graph[a][b] == INF :
+          print("X", end =" ")
+        else: # 도달할 수 있는 경우
+          print(graph[a][b], end=" ")
+      print() # 줄바꿈
+    print(graph[3][1])
+def matrix():
+    import sys
+    input = sys.stdin.readline
+    print("행렬의 개수")
+    n = int(input())
+    print("행령의 크기를 행 열 순으로 입력")
+    a = [list(map(int,input().split())) for i in range(n)]
+    d = [[0 for i in range(n)] for i in range(n)]
+
+    # 인접한 2개의 행렬은 미리 곱하여 배열에 넣는다.
+    for i in range(n-1):
+        d[i][i+1] = a[i][0]*a[i+1][0]*a[i+1][1]
+
+    def dp(start,end):
+        if d[start][end] != 0:
+            return d[start][end]
+        if start == end:
+            return 0
+    
+        r = float('inf')
+        for i in range(start,end):
+            temp = dp(start,i) + dp(i+1,end) + a[start][0]*a[i+1][0]*a[end][1]
+            if r > temp:
+                r = temp
+        d[start][end] = r
+        return r
+
+    print(dp(0,n-1))
+while True:
+    number = int((input("matrix? ->1 , floyd? ->2  what???")))
+    if number ==1:
+        matrix()
+        break
+    elif number ==2:
+        fload()
+        break
+    else:
+        print("다시 입력해주세요")
+        def fload():
+    INF = int(1e9) # 무한을 의미하는 값으로 10억 설정
+
+    # 노드의 개수, 간선의 개수를 입력받기
+    print("노드의 개수, 간선의 개수를 입력")
+    n, m = map(int, input().split())
+
+    # 최단경로 리스트
+    # 노드번호가 1번부터 시작하여(n+1)로 설정
+    graph = [[INF]*(n+1) for _ in range(n+1)]
+
+    # 자기 자신으로 가는 비용은 0으로 초기화
+    for a in range(1, n+1):
+      for b in range(1,n+1):
+        if a==b:
+          graph[a][b] = 0
+
+    # 노드의 연결 정보를 입력받아 그 값으로 초기화
+    for _ in range(m):
+      # A에서 B로 가는 비용은 C
+      print("A에서 B로 가는 비용은 C 입력")
+      a,b,c = map(int, input().split())
+      graph[a][b] = c
+
+    # 점화식에 따라 플로이드 워셜 알고리즘 수행
+    for k in range(1, n+1):
+      for a in range(1, n+1):
+        for b in range(1, n+1):
+          graph[a][b] = min(graph[a][b], graph[a][k]+graph[k][b])
+
+    # 수행된 결과를 출력
+    for a in range(1, n+1):
+      for b in range(1, n+1):
+         # 도달할 수 없는 경우, 무한이라고 출력
+        if graph[a][b] == INF :
+          print("X", end =" ")
+        else: # 도달할 수 있는 경우
+          print(graph[a][b], end=" ")
+      print() # 줄바꿈
+    print(graph[3][1])
+def matrix():
+    import sys
+    input = sys.stdin.readline
+    print("행렬의 개수")
+    n = int(input())
+    print("행령의 크기를 행 열 순으로 입력")
+    a = [list(map(int,input().split())) for i in range(n)]
+    d = [[0 for i in range(n)] for i in range(n)]
+
+    # 인접한 2개의 행렬은 미리 곱하여 배열에 넣는다.
+    for i in range(n-1):
+        d[i][i+1] = a[i][0]*a[i+1][0]*a[i+1][1]
+
+    def dp(start,end):
+        if d[start][end] != 0:
+            return d[start][end]
+        if start == end:
+            return 0
+    
+        r = float('inf')
+        for i in range(start,end):
+            temp = dp(start,i) + dp(i+1,end) + a[start][0]*a[i+1][0]*a[end][1]
+            if r > temp:
+                r = temp
+        d[start][end] = r
+        return r
+
+    print(dp(0,n-1))
+while True:
+    number = int((input("matrix? ->1 , floyd? ->2  what???")))
+    if number ==1:
+        matrix()
+        break
+    elif number ==2:
+        fload()
+        break
+    else:
+        print("다시 입력해주세요")
+
+
+
+
+
+
+
+def fload():
+     INF = int(1e9) 
+ 
+     print("노드의 개수, 간선의 개수를 입력")
+     n, m = map(int, input().split())
+     graph = [[INF]*(n+1) for _ in range(n+1)]
+     for a in range(1, n+1):
+       for b in range(1,n+1):
+         if a==b:
+             graph[a][b] = 0
+             
+     for _ in range(m):
+         print("A에서 B로 가는 비용은 C 입력")
+         a,b,c = map(int, input().split())
+         graph[a][b] = c
+         
+     for k in range(1, n+1):
+         for a in range(1, n+1):
+             for b in range(1, n+1):
+                 graph[a][b] = min(graph[a][b], graph[a][k]+graph[k][b])
+                 
+     for a in range(1, n+1):
+         for b in range(1, n+1):
+ 
+             if graph[a][b] == INF :
+                 print("X", end =" ")
+             else: 
+                 print(graph[a][b], end=" ")
+         print()
+     print("최단경로 a -> b 입력하시오")
+     n, m = map(int, input().split()) 
+     print(graph[n][m])
+def matrix():
+     import sys
+     input = sys.stdin.readline
+     print("행렬의 개수")
+     n = int(input())
+     print("행령의 크기를 행 열 순으로 입력")
+     a = [list(map(int,input().split())) for i in range(n)]
+     d = [[0 for i in range(n)] for i in range(n)]
+     
+     for i in range(n-1):
+         d[i][i+1] = a[i][0]*a[i+1][0]*a[i+1][1]
+         
+     def dp(start,end):
+         if d[start][end] != 0:
+             return d[start][end]
+         if start == end:
+             return 0
+         r = float('inf')
+         for i in range(start,end):
+             temp = dp(start,i) + dp(i+1,end) + a[start][0]*a[i+1][0]*a[end][1]
+             if r > temp:
+                 r = temp
+         d[start][end] = r
+         return r
+     print(dp(0,n-1))
+while True:
+         number = int((input("matrix? ->1 , floyd? ->2 what???")))
+         if number ==1:
+             matrix()
+             print("그만 두시겠습니까? y->1 n->0")
+             a=input()
+             if int(a)==1:
+                 break
+         elif number ==2:
+             fload()
+             print("그만 두시겠습니까? y->1 n->0")
+             a=input()
+             if int(a)==1:
+                 break
+         else:
+             print("다시 입력해주세요")
